@@ -1,0 +1,16 @@
+{
+  "name": "ISI-Factura Compra Venta Moneda",
+  "short_name": "IFCVM",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/assets/images/512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
