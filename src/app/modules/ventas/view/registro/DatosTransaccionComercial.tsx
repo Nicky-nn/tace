@@ -1,4 +1,4 @@
-import { PersonAddAlt1Outlined, TableChart } from '@mui/icons-material'
+import { PersonAddAlt1Outlined, PersonSearch, TableChart } from '@mui/icons-material'
 import {
   Button,
   FormControl,
@@ -109,7 +109,7 @@ export const DatosTransaccionComercial: FC<Props> = (props) => {
             variant="outlined"
             fullWidth
             onClick={() => setExplorarCliente(true)}
-            startIcon={<TableChart />}
+            startIcon={<PersonSearch />}
           >
             Explorar Clientes
           </Button>

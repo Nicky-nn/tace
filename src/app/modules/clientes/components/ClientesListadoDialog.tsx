@@ -1,4 +1,4 @@
-import { SelectAll } from '@mui/icons-material'
+import { HowToRegRounded, SelectAll } from '@mui/icons-material'
 import { Button, Chip } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { ColumnFiltersState, PaginationState, SortingState } from '@tanstack/react-table'
@@ -130,7 +130,7 @@ const ClientesListadoDialog: FunctionComponent<Props> = (props) => {
         renderRowActions={({ row }) => (
           <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '0.5rem' }}>
             <Button
-              startIcon={<SelectAll />}
+              startIcon={<HowToRegRounded />}
               variant="outlined"
               color="primary"
               size={'small'}
@@ -139,7 +139,7 @@ const ClientesListadoDialog: FunctionComponent<Props> = (props) => {
               }}
               sx={{ width: '80px', height: '28px', fontSize: '0.8rem' }}
             >
-              Sel.
+              Utilizar
             </Button>
           </div>
         )}

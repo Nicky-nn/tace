@@ -7,7 +7,7 @@ import { FacturaProps } from '../interfaces/factura'
 
 export const ALQ_ONLINE = gql`
   mutation ANULAR($cuf: String!, $codigoMotivo: Int!) {
-    facturaEntidadFinancieraAnular(cuf: $cuf, codigoMotivo: $codigoMotivo) {
+    facturaTasaCeroAnular(cuf: $cuf, codigoMotivo: $codigoMotivo) {
       cuf
     }
   }
@@ -22,5 +22,6 @@ export const fetchFacturaAnular = async (
   client.setHeader('authorization', `Bearer ${token}`)
 
   const data: any = await client.request(ALQ_ONLINE, { cuf, codigoMotivo })
-  return data.facturaEntidadFinancieraAnular
+  return data.facturaTasaCeroAnular
 }
+
