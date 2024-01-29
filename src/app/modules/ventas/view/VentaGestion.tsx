@@ -2,9 +2,11 @@ import {
   FileOpen,
   ImportExport,
   LayersClear,
+  Link,
   Mail,
   MenuOpen,
   PictureAsPdf,
+  SettingsBackupRestore,
 } from '@mui/icons-material'
 import { Button, Chip, Grid, IconButton } from '@mui/material'
 import { Box } from '@mui/system'
@@ -40,6 +42,7 @@ import MisVentasDialog from './VentaGestion/MisVentasDialog'
 import ReenviarEmailsDialog from './VentaGestion/ReenviarEmailsDialog'
 import VentaGestionExportarDetalleDialog from './VentaGestion/VentaGestionExportarDetalleDialog'
 import VentaGestionExportarDialog from './VentaGestion/VentaGestionExportarDialog'
+import ReversionDocumentoDialog from './VentaGestion/ReversionDocumentoDialog'
 
 const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
   {
@@ -150,6 +153,7 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
 
 const VentaGestion: FC<any> = () => {
   const [openAnularDocumento, setOpenAnularDocumento] = useState(false)
+  const [openReversionDocumento, setopenReversionDocumento] = useState(false)
   const [factura, setFactura] = useState<FacturaProps | null>(null)
   const [openExport, setOpenExport] = useState(false)
   const [openExportDetalle, setOpenExportDetalle] = useState(false)
@@ -344,6 +348,15 @@ const VentaGestion: FC<any> = () => {
                     >
                       <LayersClear /> Anular Documento
                     </StyledMenuItem>
+                    <StyledMenuItem
+                      onClick={(e) => {
+                        e.preventDefault()
+                        setopenReversionDocumento(true)
+                        setFactura(row.original)
+                      }}
+                    >
+                      <SettingsBackupRestore /> Reversión de Anulación
+                    </StyledMenuItem>
 
                     <StyledMenuItem
                       onClick={() => {
@@ -374,7 +387,7 @@ const VentaGestion: FC<any> = () => {
                         openInNewTab(row.original.representacionGrafica.sin)
                       }}
                     >
-                      <FileOpen /> Url S.I.N.
+                      <Link /> Url S.I.N.
                     </StyledMenuItem>
 
                     <StyledMenuItem
@@ -446,6 +459,17 @@ const VentaGestion: FC<any> = () => {
         onClose={() => {
           setFactura(null)
           setOpenReenviarEmails(false)
+        }}
+        factura={factura}
+      />
+
+      <ReversionDocumentoDialog
+        id={'reversionDocumentoDialog'}
+        open={openReversionDocumento}
+        keepMounted={true}
+        onClose={() => {
+          setFactura(null)
+          setopenReversionDocumento(false)
         }}
         factura={factura}
       />

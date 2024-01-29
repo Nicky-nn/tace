@@ -44,17 +44,17 @@ export const navigations: NavigationProps[] = [
       },
     ],
   },
-  {
-    name: 'Nota Crédito Debito',
-    icon: 'document_scanner',
-    children: [
-      {
-        name: 'Gestión de Notas',
-        iconText: 'NCD',
-        path: ncdRouteMap.gestion,
-      },
-    ],
-  },
+  // {
+  //   name: 'Nota Crédito Debito',
+  //   icon: 'document_scanner',
+  //   children: [
+  //     {
+  //       name: 'Gestión de Notas',
+  //       iconText: 'NCD',
+  //       path: ncdRouteMap.gestion,
+  //     },
+  //   ],
+  // },
   {
     name: 'Servicios',
     icon: 'storefront_sharp',
