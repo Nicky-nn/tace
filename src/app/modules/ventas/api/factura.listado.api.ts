@@ -16,7 +16,7 @@ export interface ApiFacturaResponse {
 
 const query = gql`
   query LISTADO($limit: Int!, $reverse: Boolean, $page: Int!, $query: String) {
-    facturaSectorEducativoListado(
+    facturaTasaCeroListado(
       limit: $limit
       reverse: $reverse
       page: $page
@@ -122,6 +122,6 @@ export const fetchFacturaListado = async (
   client.setHeader('authorization', `Bearer ${token}`)
 
   const data: any = await client.request(query, { ...pageInfo })
-  return data.facturaSectorEducativoListado
+  return data.facturaTasaCeroListado
 }
 

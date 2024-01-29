@@ -42,7 +42,7 @@ import {
 } from '../../services/operacionesService'
 import { composeFactura, composeFacturaValidator } from '../../utils/composeFactura'
 import { DescuentoAdicionalDialog } from './ventaTotales/DescuentoAdicionalDialog'
-import { GiftCardDialog } from '../../../contingencia/view/registro/ventaTotales/GiftCard'
+import { GiftCardDialog } from './ventaTotales/GiftCard'
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>
@@ -102,6 +102,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
       })
     }
   }
+  const form = props.form
 
   const {
     data: monedas,
@@ -128,7 +129,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
 
   const calculoMoneda = (monto: number): number => {
     try {
-      return genRound((monto * tipoCambio) / genRound(inputMoneda!.tipoCambio))
+      return genRound((monto * 1) / genRound(inputMoneda!.tipoCambio))
     } catch (e) {
       return monto
     }
@@ -140,7 +141,17 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
     setValue('montoPagar', totales.montoPagar)
     setValue('inputVuelto', totales.vuelto)
     setValue('total', totales.total)
-  }, [getValues('descuentoAdicional'), getValues('inputMontoPagar')])
+  }, [
+    getValues('descuentoAdicional'),
+    getValues('inputMontoPagar'),
+    getValues('montoGiftCard'),
+    getValues('codigoMetodoPago'),
+  ])
+
+  useEffect(() => {
+    const tipoCambioValue = inputMoneda?.tipoCambio ?? 0
+    setValue('tipoCambio', tipoCambioValue)
+  }, [form, getValues('moneda')])
 
   return (
     <>
@@ -167,8 +178,11 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                   name="moneda"
                   placeholder={'Seleccione la moneda de venta'}
                   value={field.value}
+                  // en defaultValue colocaremos la moneda del usuario
+                  defaultValue={monedas?.find((i) => i.codigo === moneda.codigo)}
                   onChange={async (val: any) => {
                     field.onChange(val)
+                    setValue('tipoCambio', val.tipoCambio)
                   }}
                   onBlur={async (val) => {
                     field.onBlur()
@@ -197,7 +211,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
             style={{ padding: 0 }}
             secondaryAction={
               <Typography variant="subtitle1" gutterBottom>
-                {numberWithCommas(calculoMoneda(getValues('montoSubTotal') || 0), {})}
+                {numberWithCommas(getValues('montoSubTotal') || 0, {})}
                 <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
               </Typography>
             }
@@ -215,10 +229,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                   variant="subtitle1"
                   underline="hover"
                 >
-                  {numberWithCommas(
-                    calculoMoneda(getValues('descuentoAdicional')) || 0,
-                    {},
-                  )}
+                  {numberWithCommas(getValues('descuentoAdicional') || 0, {})}
                   <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
                 </Link>
                 <DescuentoAdicionalDialog
@@ -249,7 +260,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                   variant="subtitle1"
                   underline="hover"
                 >
-                  {numberWithCommas(calculoMoneda(getValues('montoGiftCard') ?? 0), {})}
+                  {numberWithCommas(getValues('montoGiftCard') ?? 0, {})}
                   <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
                 </Link>
                 <GiftCardDialog
@@ -274,7 +285,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
             style={{ padding: 0 }}
             secondaryAction={
               <Typography variant="subtitle1" gutterBottom>
-                {numberWithCommas(calculoMoneda(getValues('total') || 0), {})}
+                {numberWithCommas(getValues('total') || 0, {})}
                 <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
               </Typography>
             }
@@ -290,13 +301,38 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
             style={{ padding: 0 }}
             secondaryAction={
               <Typography variant="h6" gutterBottom>
-                {numberWithCommas(calculoMoneda(getValues('montoPagar') || 0), {})}
+                {numberWithCommas(getValues('montoPagar') || 0, {})}
                 <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
               </Typography>
             }
           >
             <ListItemText primary={<strong>MONTO A PAGAR</strong>} />
           </ListItem>
+          {inputMoneda?.sigla === 'BOB' ? null : (
+            <ListItem
+              style={{ padding: 0 }}
+              secondaryAction={
+                <Typography gutterBottom>
+                  {' '}
+                  {numberWithCommas(calculoMoneda(getValues('montoPagar') || 0), {})}
+                  <span style={{ fontSize: '0.8em' }}>
+                    {' '}
+                    {inputMoneda?.sigla || ''}
+                  </span>{' '}
+                </Typography>
+              }
+            >
+              {' '}
+              <ListItemText
+                primary={
+                  <span style={{ fontWeight: 'normal' }}>
+                    {' '}
+                    MONTO A PAGAR ({inputMoneda?.descripcion || ''}){' '}
+                  </span>
+                }
+              />{' '}
+            </ListItem>
+          )}
         </List>
 
         <Divider style={{ marginTop: 10, marginBottom: 20 }} color={'red'} />
@@ -328,7 +364,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
           <Grid item xs={12} md={5} lg={5}>
             <small>Vuelto / Saldo</small>
             <Typography variant="h6" gutterBottom mr={2} align={'right'} color={'red'}>
-              {numberWithCommas(calculoMoneda(getValues('inputVuelto') || 0), {})}
+              {numberWithCommas(getValues('inputVuelto') || 0, {})}
             </Typography>
           </Grid>
           <Grid item xs={12} md={12} lg={12}>

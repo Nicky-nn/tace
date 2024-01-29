@@ -14,6 +14,4 @@ export const VentaRegistroValidator = object({
     .nullable()
     .required(),
   emailCliente: string().email().nullable().required(),
-  periodoFacturado: string().nullable().required('Debe ingresar el periodo facturado'),
-  nombreEstudiante: string().nullable().required('Debe ingresar el nombre del estudiante'),
 })

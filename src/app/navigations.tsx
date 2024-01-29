@@ -30,7 +30,7 @@ export const navigations: NavigationProps[] = [
   },
   {
     name: 'Facturación',
-    icon: 'attach_money',
+    icon: 'add_to_queue',
     children: [
       {
         name: 'Registrar Factura',

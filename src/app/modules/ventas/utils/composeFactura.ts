@@ -26,8 +26,6 @@ export const composeFactura = (fcv: FacturaInputProps): any => {
     codigoMoneda: fcv.moneda!.codigo,
     tipoCambio: fcv.tipoCambio,
     detalleExtra: fcv.detalleExtra,
-    nombreEstudiante: fcv.nombreEstudiante,
-    periodoFacturado: fcv.periodoFacturado,
     detalle: fcv.detalle.map((item) => ({
       codigoActividad: fcv.actividadEconomica!?.codigoActividad,
       codigoProductoSin: item.codigoProductoSin,
@@ -35,19 +33,25 @@ export const composeFactura = (fcv: FacturaInputProps): any => {
       descripcionProducto: item.nombre,
       cantidad: item.cantidad,
       unidadMedida: parseInt(item.unidadMedida.codigoClasificador.toString()),
-      montoDescuento: parseFloat(numberWithCommas(item.conversionMontoDescuento, { decimalPlaces: 2 })),
+      montoDescuento: item.conversionMontoDescuento,
+
       detalleExtra: item.detalleExtra,
-      precioUnitario: parseFloat(
-        numberWithCommas(item.conversionMoneda, { decimalPlaces: 2 }),
-      ),
+      precioUnitario: item.conversionMoneda,
     })),
   }
+
+  if (fcv.codigoMetodoPago.codigoClasificador === 27) {
+    return { ...input, montoGiftCard: fcv.montoGiftCard }
+  }
+
   if (fcv.numeroTarjeta) {
     return { ...input, numeroTarjeta: fcv.numeroTarjeta }
   }
+
   // return { input, notificacion }
   return input
 }
+
 export const composeFacturaValidator = async (fcv: any): Promise<boolean> => {
   const schema = object({
     actividadEconomica: string().required('Debe seleccionar la actividad economica'),

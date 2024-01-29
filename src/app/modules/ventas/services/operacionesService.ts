@@ -5,7 +5,8 @@ export const montoPagarService = (factura: FacturaInputProps): number => {
   if (factura.detalle.length > 0) {
     const subTotal: number =
       factura.detalle.reduce(
-        (acc, cur) => acc + cur.cantidad * cur.conversionMoneda - cur.conversionMontoDescuento,
+        (acc, cur) =>
+          acc + cur.cantidad * cur.conversionMoneda - cur.conversionMontoDescuento,
         0,
       ) || 0
     return subTotal - factura.descuentoAdicional
@@ -17,7 +18,8 @@ export const montoSubTotal = (factura: FacturaInputProps): number => {
   if (factura.detalle.length > 0) {
     return (
       factura.detalle.reduce(
-        (acc, cur) => acc + cur.cantidad * cur.conversionMoneda - cur.conversionMontoDescuento,
+        (acc, cur) =>
+          acc + cur.cantidad * cur.conversionMoneda - cur.conversionMontoDescuento,
         0,
       ) || 0
     )
@@ -61,13 +63,19 @@ export const genCalculoTotalesService = (
     }
   })
 
-
   const subTotal = montoSubTotal(factura)
-  const auxTotal = montoSubTotal2(factura)
   const total = subTotal - factura.descuentoAdicional
-  const montoPagar = subTotal - genReplaceEmpty(factura.descuentoAdicional, 0)
-  const vuelto = factura.inputMontoPagar - montoPagar
+  // const montoPagar =
+  //   subTotal - genReplaceEmpty(factura.descuentoAdicional, 0) - (factura?.montoGiftCard ?? 0)
 
+  const montoPagar =
+    factura.codigoMetodoPago.codigoClasificador === 27
+      ? subTotal -
+        genReplaceEmpty(factura.descuentoAdicional, 0) -
+        (factura?.montoGiftCard ?? 0)
+      : subTotal - genReplaceEmpty(factura.descuentoAdicional, 0)
+
+  const vuelto = factura.inputMontoPagar - montoPagar
 
   return { subTotal, total, montoPagar, vuelto, detalleConInfoMoneda }
 }

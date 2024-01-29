@@ -38,6 +38,7 @@ import { genCalculoTotalesService } from '../../services/operacionesService'
 import AgregarArticuloDialog from './AgregarArticuloDialog'
 import { apiMonedas } from '../../../base/moneda/api/monedaListado.api'
 import { MonedaProps } from '../../../base/moneda/interfaces/moneda'
+import { genRound } from '../../../../utils/utils'
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>
@@ -156,7 +157,6 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
     let monedaVenta = 0
     let monedaCompra = 0
 
-    console.log(inputMoneda?.sigla)
 
     // inputMoneda?.sigla === 'BOB'
 
@@ -215,7 +215,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
     }
   }
 
-  const convertirMonedaABOB = (monto: number, monedaSigla: string) => {
+  const convertirMonedaABOB2 = (monto: number, monedaSigla: string) => {
     let monedaVenta = 0
     let monedaCompra = 0
     // Si la Moneda es Boliviana
@@ -233,6 +233,30 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
       })
       monto = monto / monedaCompra
       monedaSigla = 'BOB'
+      return monto
+    }
+  }
+
+  const convertirMonedaABOB = (monto: number, monedaSigla: string) => {
+    try {
+      let monedaVenta = 0
+
+      // Suponiendo que 'monedas' es un array definido en algún lugar del código
+      monedas.forEach((moneda: any) => {
+        if (moneda.sigla === monedaSigla) {
+          monedaVenta = moneda.tipoCambio
+        }
+      })
+
+      if (monedaVenta !== 0) {
+        return genRound((monto * 1) / genRound(monedaVenta))
+      } else {
+        // Manejar la situación en la que monedaVenta es cero para evitar división por cero
+        console.error('Error: Tipo de cambio no disponible para la moneda especificada')
+        return monto
+      }
+    } catch (e) {
+      console.error('Error al convertir moneda:', e)
       return monto
     }
   }

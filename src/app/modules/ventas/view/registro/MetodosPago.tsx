@@ -62,6 +62,11 @@ const MetodosPago: FunctionComponent<Props> = (props) => {
                     fontWeight: 'bold',
                     fontSize: '15px',
                   }),
+                  menu: (provided, state) => ({
+                    ...provided,
+                    backgroundColor: 'white', // Cambia este valor al color que desees
+                    zIndex: 1000, // Ajusta el valor según sea necesario
+                  }),
                 }}
                 name="codigoMetodoPago"
                 placeholder={'Seleccione el método de págo'}
@@ -126,3 +131,4 @@ const MetodosPago: FunctionComponent<Props> = (props) => {
 }
 
 export default MetodosPago
+

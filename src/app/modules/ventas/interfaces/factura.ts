@@ -58,7 +58,6 @@ export interface FacturaInputProps {
   inputVuelto: number
   moneda?: MonedaProps
   notificacion?: boolean
-  montoTotalArrendamientoFinanciero?: number | null | undefined
   nombreEstudiante?: string
   periodoFacturado?: string
   montoGiftCard?: number | null | undefined
@@ -95,7 +94,7 @@ export const FacturaInitialValues: FacturaInputProps = {
   total: 0,
   inputMontoPagar: 0,
   inputVuelto: 0,
-  montoTotalArrendamientoFinanciero: 0,
+  montoGiftCard: 0,
 }
 
 export interface RepresentacionGraficaProps {

@@ -6,7 +6,7 @@ import { AccessToken } from '../../../base/models/paramsModel'
 
 const mutation = gql`
   mutation REENVIAR_EMAIL($cuf: String!, $emails: [String]!) {
-    facturaSectorEducativoReenviarEmail(cuf: $cuf, emails: $emails)
+    facturaTasaCeroReenviarEmail(cuf: $cuf, emails: $emails)
   }
 `
 
