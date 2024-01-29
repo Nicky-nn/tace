@@ -29,7 +29,6 @@ export const composeFactura = (fcv: FacturaInputProps): any => {
     codigoMoneda: fcv.moneda!.codigo,
     tipoCambio: fcv.tipoCambio,
     detalleExtra: fcv.detalleExtra,
-    montoTotalArrendamientoFinanciero: fcv.montoTotalArrendamientoFinanciero,
     detalle: fcv.detalle.map((item) => ({
       codigoActividad: fcv.actividadEconomica!?.codigoActividad,
       codigoProductoSin: item.codigoProductoSin,
@@ -42,6 +41,9 @@ export const composeFactura = (fcv: FacturaInputProps): any => {
       precioUnitario: item.precioUnitario,
     })),
   }
+  if (fcv.codigoMetodoPago.codigoClasificador === 27) {
+    return { ...input, montoGiftCard: fcv.montoGiftCard, contingencia }
+  }
   if (fcv.numeroTarjeta) {
     return { ...input, numeroTarjeta: fcv.numeroTarjeta, ...contingencia }
   }
@@ -51,15 +53,15 @@ export const composeFactura = (fcv: FacturaInputProps): any => {
 export const composeFacturaValidator = async (fcv: any): Promise<boolean> => {
   const schema = object({
     input: object({
-      actividadEconomica: string().required('Debe seleccionar la actividad economica'),
-      cliente: object({
-        codigoCliente: string().required('Debe seleccionar los datos del cliente'),
-        email: string().email('Debe ingresar un correo valido'),
-      }),
+      // actividadEconomica: string().required('Debe seleccionar la actividad economica'),
+      // cliente: object({
+      //   codigoCliente: string().required('Debe seleccionar los datos del cliente'),
+      //   email: string().email('Debe ingresar un correo valido'),
+      // }),
       montoTotalArrendamientoFinanciero: number().min(0),
-      codigoMetodoPago: number().integer().min(1).max(308).required(),
+      // codigoMetodoPago: number().integer().min(1).max(308).required(),
       detalleExtra: string().min(0).max(500),
-      tipoCambio: number().min(0).required('Debe ingresar el tipo de cambio'),
+      // tipoCambio: number().min(0).required('Debe ingresar el tipo de cambio'),
       numeroTarjeta: string().max(16),
       detalle: array()
         .of(
@@ -83,3 +85,4 @@ export const composeFacturaValidator = async (fcv: any): Promise<boolean> => {
   await schema.validate(fcv)
   return true
 }
+

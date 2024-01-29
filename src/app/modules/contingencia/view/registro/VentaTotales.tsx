@@ -15,7 +15,7 @@ import {
 } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import InputNumber from 'rc-input-number'
-import { FunctionComponent, useEffect, useState } from 'react'
+import React, { FunctionComponent, useEffect, useState } from 'react'
 import { Controller, SubmitHandler, UseFormReturn } from 'react-hook-form'
 import Select from 'react-select'
 import Swal from 'sweetalert2'
@@ -36,10 +36,13 @@ import { apiMonedas } from '../../../base/moneda/api/monedaListado.api'
 import { MonedaProps } from '../../../base/moneda/interfaces/moneda'
 import { fetchFacturaCreate } from '../../api/facturaCreate.api'
 import { FacturaInitialValues, FacturaInputProps } from '../../interfaces/factura'
-import { genCalculoTotalesService } from '../../services/operacionesService'
+import {
+  genCalculoTotalesService,
+  montoSubTotal,
+} from '../../services/operacionesService'
 import { composeFactura, composeFacturaValidator } from '../../utils/composeFactura'
-import { ArrendaminetoDialog } from './ventaTotales/ArrendaminetoDialog'
 import { DescuentoAdicionalDialog } from './ventaTotales/DescuentoAdicionalDialog'
+import { GiftCardDialog } from '../../../ventas/view/registro/ventaTotales/GiftCard'
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>
@@ -62,8 +65,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
     },
   } = props
   const [openDescuentoAdicional, setOpenDescuentoAdicional] = useState(false)
-  const [openArrendamientoFinanciero, setOpenArrendamientoFinanciero] = useState(false)
-
+  const [openGiftCard, setopenGiftCard] = useState(false)
   const mySwal = withReactContent(Swal)
   const inputMoneda = getValues('moneda')
   const tipoCambio = getValues('tipoCambio')
@@ -74,11 +76,12 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
     const validator = await composeFacturaValidator(inputFactura).catch((err: Error) => {
       notError(err.message)
     })
+    const { contingencia, ...inputFactura2 } = inputFactura
     if (validator) {
       await swalAsyncConfirmDialog({
         text: '¿Confirma que desea emitir el documento fiscal?',
         preConfirm: () => {
-          return fetchFacturaCreate(inputFactura.input, inputFactura.contingencia).catch(
+          return fetchFacturaCreate(inputFactura2, inputFactura.contingencia).catch(
             (err) => {
               swalException(err)
               return false
@@ -102,6 +105,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
       })
     }
   }
+  const form = props.form
 
   const {
     data: monedas,
@@ -128,7 +132,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
 
   const calculoMoneda = (monto: number): number => {
     try {
-      return genRound((monto * tipoCambio) / genRound(inputMoneda!.tipoCambio))
+      return genRound((monto * 1) / genRound(inputMoneda!.tipoCambio))
     } catch (e) {
       return monto
     }
@@ -143,8 +147,14 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
   }, [
     getValues('descuentoAdicional'),
     getValues('inputMontoPagar'),
-    getValues('montoTotalArrendamientoFinanciero'),
+    getValues('montoGiftCard'),
+    getValues('codigoMetodoPago'),
   ])
+
+  useEffect(() => {
+    const tipoCambioValue = inputMoneda?.tipoCambio ?? 0
+    setValue('tipoCambio', tipoCambioValue)
+  }, [form, getValues('moneda')])
 
   return (
     <>
@@ -162,7 +172,6 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                   {...field}
                   styles={{
                     ...reactSelectStyles,
-                    // @ts-ignore
                     control: (styles) => ({
                       ...styles,
                       fontWeight: 'bold',
@@ -172,8 +181,11 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                   name="moneda"
                   placeholder={'Seleccione la moneda de venta'}
                   value={field.value}
+                  // en defaultValue colocaremos la moneda del usuario
+                  defaultValue={monedas?.find((i) => i.codigo === moneda.codigo)}
                   onChange={async (val: any) => {
                     field.onChange(val)
+                    setValue('tipoCambio', val.tipoCambio)
                   }}
                   onBlur={async (val) => {
                     field.onBlur()
@@ -202,7 +214,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
             style={{ padding: 0 }}
             secondaryAction={
               <Typography variant="subtitle1" gutterBottom>
-                {numberWithCommas(calculoMoneda(getValues('montoSubTotal') || 0), {})}
+                {numberWithCommas(getValues('montoSubTotal') || 0, {})}
                 <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
               </Typography>
             }
@@ -220,10 +232,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                   variant="subtitle1"
                   underline="hover"
                 >
-                  {numberWithCommas(
-                    calculoMoneda(getValues('descuentoAdicional')) || 0,
-                    {},
-                  )}
+                  {numberWithCommas(getValues('descuentoAdicional') || 0, {})}
                   <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
                 </Link>
                 <DescuentoAdicionalDialog
@@ -250,40 +259,36 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
               <>
                 <Link
                   href="#"
-                  onClick={() => setOpenArrendamientoFinanciero(true)}
+                  onClick={() => setopenGiftCard(true)}
                   variant="subtitle1"
                   underline="hover"
                 >
-                  {numberWithCommas(
-                    calculoMoneda(getValues('montoTotalArrendamientoFinanciero') ?? 0) ||
-                      0,
-                    {},
-                  )}
+                  {numberWithCommas(getValues('montoGiftCard') ?? 0, {})}
                   <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
                 </Link>
-                <ArrendaminetoDialog
-                  id="ringtone-menu"
+                <GiftCardDialog
+                  id="giftCardDialog"
                   keepMounted={false}
-                  open={openArrendamientoFinanciero}
+                  open={openGiftCard}
                   onClose={(newValue) => {
-                    setOpenArrendamientoFinanciero(false)
+                    setopenGiftCard(false)
                     if (newValue || newValue === 0) {
-                      setValue('montoTotalArrendamientoFinanciero', newValue)
+                      setValue('montoGiftCard', newValue)
                     }
                   }}
-                  value={getValues('montoTotalArrendamientoFinanciero') || 0}
-                />
+                  value={getValues('montoGiftCard') || 0}
+                ></GiftCardDialog>
               </>
             }
           >
-            <ListItemText primary={<strong>ARRENDAMIENTO FINANCIERO</strong>} />
+            <ListItemText primary={<strong>GIFT CARD</strong>} />
           </ListItem>
 
           <ListItem
             style={{ padding: 0 }}
             secondaryAction={
               <Typography variant="subtitle1" gutterBottom>
-                {numberWithCommas(calculoMoneda(getValues('total') || 0), {})}
+                {numberWithCommas(getValues('total') || 0, {})}
                 <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
               </Typography>
             }
@@ -299,13 +304,38 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
             style={{ padding: 0 }}
             secondaryAction={
               <Typography variant="h6" gutterBottom>
-                {numberWithCommas(calculoMoneda(getValues('montoPagar') || 0), {})}
+                {numberWithCommas(getValues('montoPagar') || 0, {})}
                 <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
               </Typography>
             }
           >
             <ListItemText primary={<strong>MONTO A PAGAR</strong>} />
           </ListItem>
+          {inputMoneda?.sigla === 'BOB' ? null : (
+            <ListItem
+              style={{ padding: 0 }}
+              secondaryAction={
+                <Typography gutterBottom>
+                  {' '}
+                  {numberWithCommas(calculoMoneda(getValues('montoPagar') || 0), {})}
+                  <span style={{ fontSize: '0.8em' }}>
+                    {' '}
+                    {inputMoneda?.sigla || ''}
+                  </span>{' '}
+                </Typography>
+              }
+            >
+              {' '}
+              <ListItemText
+                primary={
+                  <span style={{ fontWeight: 'normal' }}>
+                    {' '}
+                    MONTO A PAGAR ({inputMoneda?.descripcion || ''}){' '}
+                  </span>
+                }
+              />{' '}
+            </ListItem>
+          )}
         </List>
 
         <Divider style={{ marginTop: 10, marginBottom: 20 }} color={'red'} />
@@ -337,7 +367,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
           <Grid item xs={12} md={5} lg={5}>
             <small>Vuelto / Saldo</small>
             <Typography variant="h6" gutterBottom mr={2} align={'right'} color={'red'}>
-              {numberWithCommas(calculoMoneda(getValues('inputVuelto') || 0), {})}
+              {numberWithCommas(getValues('inputVuelto') || 0, {})}
             </Typography>
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
@@ -357,3 +387,4 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
   )
 }
 export default VentaTotales
+

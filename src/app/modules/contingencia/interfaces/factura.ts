@@ -26,7 +26,8 @@ export interface FacturaAlquilerDetalleInput extends ProductoVarianteProps {
   cantidad: number
   precioUnitario: number
   montoDescuento: number
-  montoTotalArrendamientoFinanciero: number | null | undefined
+  conversionMoneda: number
+  conversionMontoDescuento: number  
 }
 
 export interface FacturaInputProps {
@@ -56,6 +57,7 @@ export interface FacturaInputProps {
   montoTotalArrendamientoFinanciero?: number | null | undefined
   numeroFactura?: number
   fechaEmision?: string
+  montoGiftCard?: number | null | undefined
 }
 
 /**

@@ -83,22 +83,22 @@ export const navigations: NavigationProps[] = [
       },
     ],
   },
-  // {
-  //   name: 'Contingencias',
-  //   icon: 'report_problem',
-  //   children: [
-  //     {
-  //       name: 'Registrar Contingencia',
-  //       iconText: 'RC',
-  //       path: '/contingencia/registro',
-  //     },
-  //     {
-  //       name: 'Gestión de Contingencias',
-  //       iconText: 'GC',
-  //       path: '/contingencia/gestion',
-  //     },
-  //   ],
-  // },
+  {
+    name: 'Contingencias',
+    icon: 'report_problem',
+    children: [
+      {
+        name: 'Registrar Contingencia',
+        iconText: 'RC',
+        path: '/contingencia/registro',
+      },
+      {
+        name: 'Gestión de Contingencias',
+        iconText: 'GC',
+        path: '/contingencia/gestion',
+      },
+    ],
+  },
   {
     name: 'Reportes',
     icon: 'trending_up',

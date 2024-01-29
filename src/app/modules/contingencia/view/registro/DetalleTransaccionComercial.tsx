@@ -5,6 +5,7 @@ import {
   FormControl,
   Grid,
   IconButton,
+  InputAdornment,
   List,
   ListItem,
   ListItemAvatar,
@@ -35,6 +36,9 @@ import { ProductoVarianteProps } from '../../../productos/interfaces/producto.in
 import { FacturaAlquilerDetalleInput, FacturaInputProps } from '../../interfaces/factura'
 import { genCalculoTotalesService } from '../../services/operacionesService'
 import AgregarArticuloDialog from './AgregarArticuloDialog'
+import { apiMonedas } from '../../../base/moneda/api/monedaListado.api'
+import { MonedaProps } from '../../../base/moneda/interfaces/moneda'
+import { genRound } from '../../../../utils/utils'
 
 interface OwnProps {
   form: UseFormReturn<FacturaInputProps>
@@ -42,20 +46,10 @@ interface OwnProps {
 }
 
 type Props = OwnProps
-/**
- * @description Detalle de la transaccion comercial
- * @param props
- * @constructor
- */
-
-/* El código anterior es un componente funcional de React que define un formulario con una matriz de campo denominada
-"detalle". Utiliza los ganchos useState y useFieldArray de la biblioteca React Hook Form para administrar
-el estado del formulario y la matriz de campo. También usa el enlace useAuth para obtener la moneda del usuario.
-y la función handleChange para agregar un nuevo elemento a la matriz de campo "detalle" cuando se ingresa una nueva
-seleccionado. El código también define dos variables de estado, "openAddArticle" y
-"openExploreProduct", que se utilizan para controlar la visibilidad de dos ventanas modales. */
 export const DetalleTransaccionComercial: FC<Props> = (props) => {
   const [periodoDate, setPeriodoDate] = useState('')
+  const [conversion, setConversion] = useState(0)
+
   const {
     form: {
       control,
@@ -79,6 +73,7 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
   const handleChange = async (newInput: ProductoVarianteProps) => {
     if (newInput) {
       // Verificamos si ya existe el producto (no se verifica)
+      const cantidadInicial = 1
       prepend({
         ...(newInput as FacturaAlquilerDetalleInput),
         codigoProductoSin: newInput.sinProductoServicio.codigoProducto,
@@ -87,6 +82,11 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
         precioUnitario: newInput.precio,
         montoDescuento: 0,
         subtotal: 0,
+        conversionMoneda: convertirMonedaABOB(
+          newInput.precio * cantidadInicial,
+          newInput.moneda.sigla,
+        ),
+        conversionMontoDescuento: 0,
         // descripcion: newInput.sinProductoServicio.descripcion,
       } as FacturaAlquilerDetalleInput)
       /*
@@ -109,7 +109,6 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
   const cargarVariantesProductos = async (inputValue: string): Promise<any[]> => {
     try {
       const productos = await apiProductosVariantesBusqueda(inputValue)
-      // console.log('Actividad Economica', getValues('actividadEconomica.codigoActividad'))
       if (productos) {
         const productosFiltrados = productos.filter(
           (producto: any) =>
@@ -135,6 +134,132 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
   useEffect(() => {
     if (getValues('actividadEconomica')) cargarVariantesProductos('').then()
   }, [getValues('actividadEconomica')])
+
+  const inputMoneda = getValues('moneda')
+
+  const [monedas, setMonedas] = useState<MonedaProps[]>([])
+
+  useEffect(() => {
+    const obtenerMoneda = async () => {
+      try {
+        const moneda = await apiMonedas()
+        setMonedas(moneda)
+      } catch (error) {
+        console.log(error)
+        throw error
+      }
+    }
+    obtenerMoneda()
+  }, [])
+
+  // Función para convertir mobeda a inpitMoneda
+  const convertirMoneda = (monto: number, monedaSigla: string) => {
+    let monedaVenta = 0
+    let monedaCompra = 0
+
+
+    // inputMoneda?.sigla === 'BOB'
+
+    // Si la Moneda es diferente a BOB
+    // Preguntamos si moneda = moenda de la tienda
+    if (monedaSigla === inputMoneda?.sigla) {
+      // Mismas monedas
+      // console.log(monto, monedaSigla)
+      return monto
+    } else {
+      if (monedaSigla !== 'BOB') {
+        // Convertimoos  a BOB con moneda de compra
+        // antes encontramos el tipoCambio copra de monedaSigla
+
+        monedas.forEach((moneda: any) => {
+          if (moneda.sigla === monedaSigla) {
+            monedaCompra = moneda.tipoCambioCompra
+            monedaVenta = moneda.tipoCambio
+          }
+        })
+        monto = monto / monedaCompra
+        monedaSigla = 'BOB'
+
+        // Preguntamos si la moneda es igual a la moneda de la tienda
+        if (monedaSigla === inputMoneda?.sigla) {
+          // Convertimos a la moneda de la tienda
+          return monto
+          // console.log(monto, monedaSigla)
+        } else {
+          monedas.forEach((moneda: any) => {
+            if (moneda.sigla === inputMoneda?.sigla) {
+              monedaVenta = moneda.tipoCambio
+            }
+          })
+
+          monto = monto * monedaVenta
+          return monto
+          // console.log(monto, monedaSigla)
+        }
+      } else {
+        if (inputMoneda?.sigla === 'BOB') {
+          // console.log(monto, monedaSigla)
+          return monto
+        } else {
+          // buscamos monedaventa de la tienda
+          monedas.forEach((moneda: any) => {
+            if (moneda.sigla === inputMoneda?.sigla) {
+              monedaVenta = moneda.tipoCambio
+            }
+          })
+          monto = monto * monedaVenta
+          // console.log(monto, monedaSigla)
+          return monto
+        }
+      }
+    }
+  }
+
+  const convertirMonedaABOB2 = (monto: number, monedaSigla: string) => {
+    let monedaVenta = 0
+    let monedaCompra = 0
+    // Si la Moneda es Boliviana
+    if (monedaSigla === 'BOB') {
+      return monto
+    } else {
+      // Convertimoos  a BOB con moneda de compra
+      // antes encontramos el tipoCambio copra de monedaSigla
+
+      monedas.forEach((moneda: any) => {
+        if (moneda.sigla === monedaSigla) {
+          monedaCompra = moneda.tipoCambioCompra
+          monedaVenta = moneda.tipoCambio
+        }
+      })
+      monto = monto / monedaCompra
+      monedaSigla = 'BOB'
+      return monto
+    }
+  }
+
+  const convertirMonedaABOB = (monto: number, monedaSigla: string) => {
+    try {
+      let monedaVenta = 0
+
+      // Suponiendo que 'monedas' es un array definido en algún lugar del código
+      monedas.forEach((moneda: any) => {
+        if (moneda.sigla === monedaSigla) {
+          monedaVenta = moneda.tipoCambio
+        }
+      })
+
+      if (monedaVenta !== 0) {
+        return genRound((monto * 1) / genRound(monedaVenta))
+      } else {
+        // Manejar la situación en la que monedaVenta es cero para evitar división por cero
+        console.error('Error: Tipo de cambio no disponible para la moneda especificada')
+        return monto
+      }
+    } catch (e) {
+      console.error('Error al convertir moneda:', e)
+      return monto
+    }
+  }
 
   if (getValues('actividadEconomica.codigoActividad')) {
     return (
@@ -202,9 +327,6 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                       <th scope="col" style={{ width: 160 }}>
                         Cantidad
                       </th>
-                      {/* <th scope="col" style={{ width: 160 }}>
-                        Cantidad ICE
-                      </th> */}
                       <th scope="col" style={{ width: 160 }}>
                         Precio
                       </th>
@@ -293,35 +415,29 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                               />
                             </td>
                             <td data-label={`PRECIO (${monedaTienda.sigla})`}>
-                              {/* <InputNumber
-                                min={0}
-                                value={item.precioUnitario}
-                                onFocus={handleFocus}
-                                onChange={(precio: number | null) => {
-                                  if (precio) {
-                                    if (precio >= 0 && precio >= item.montoDescuento) {
-                                      update(index, { ...item, precioUnitario: precio })
-                                    } else {
-                                      toast.warn(
-                                        'El precio no puede ser menor al descuento',
-                                      )
-                                    }
-                                  }
-                                }}
-                                formatter={(value, info) =>
-                                  numberWithCommas(value, info, 5)
-                                }
-                              /> */}
                               <OutlinedInput
                                 size={'small'}
                                 value={item.precioUnitario.toString()}
                                 onFocus={handleFocus}
+                                endAdornment={
+                                  <InputAdornment
+                                    position="end"
+                                    style={{ fontStyle: 'italic', color: '#888' }}
+                                  >
+                                    {item.moneda.sigla + ' '}
+                                  </InputAdornment>
+                                }
                                 onChange={(e) => {
                                   const precio = pFloat(e.target.value.toString())
+                                  const sigla = item.moneda.sigla
                                   if (precio >= 0 && precio >= item.montoDescuento) {
                                     update(index, {
                                       ...item,
                                       precioUnitario: precio,
+                                      conversionMoneda: convertirMonedaABOB(
+                                        precio,
+                                        sigla,
+                                      ),
                                     })
                                   } else {
                                     toast.warn(
@@ -332,18 +448,43 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                 inputComponent={NumeroMask as any}
                                 inputProps={{}}
                               />
+                              {/* Etiqueta de información de conversión */}
+                              <div
+                                style={{
+                                  fontSize: '12px',
+                                  marginTop: '4px',
+                                  color: '#555',
+                                }}
+                              >
+                                {/* Conversión: {item.conversionMoneda} {inputMoneda?.sigla} */}
+                                Conversión: {numberWithCommas(item.conversionMoneda, 5)}{' '}
+                                {'BOB'}
+                              </div>
                             </td>
+
                             <td data-label={`DESCUENTO (${monedaTienda.sigla})`}>
                               <OutlinedInput
                                 size={'small'}
                                 value={item.montoDescuento.toString()}
                                 onFocus={handleFocus}
+                                endAdornment={
+                                  <InputAdornment
+                                    position="end"
+                                    style={{ fontStyle: 'italic', color: '#888' }}
+                                  >
+                                    {item.moneda.sigla + ' '}
+                                  </InputAdornment>
+                                }
                                 onChange={(e) => {
                                   const montoDescuento = pFloat(e.target.value.toString())
                                   if (montoDescuento! <= item.precioUnitario) {
                                     update(index, {
                                       ...item,
                                       montoDescuento: montoDescuento!,
+                                      conversionMontoDescuento: convertirMonedaABOB(
+                                        montoDescuento!,
+                                        item.moneda.sigla,
+                                      ),
                                     })
                                   } else {
                                     toast.warn(
@@ -354,6 +495,19 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                 inputComponent={NumeroMask as any}
                                 inputProps={{}}
                               />
+                              {/* Etiqueta de información de conversión */}
+                              <div
+                                style={{
+                                  fontSize: '12px',
+                                  marginTop: '4px',
+                                  color: '#555',
+                                }}
+                              >
+                                {/* Conversión: {item.conversionMoneda} {inputMoneda?.sigla} */}
+                                Conversión:{' '}
+                                {numberWithCommas(item.conversionMontoDescuento, 5)}{' '}
+                                {'BOB'}
+                              </div>
                             </td>
                             <td
                               data-label={`SUB-TOTAL (${monedaTienda.sigla || ''})`}
@@ -370,8 +524,25 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
                                       item.montoDescuento,
                                     {},
                                   )}
-                                </strong>
+                                </strong>{' '}
+                                {item.moneda.sigla}
                               </Typography>
+                              <div
+                                style={{
+                                  fontSize: '12px',
+                                  marginTop: '4px',
+                                  color: '#555',
+                                }}
+                              >
+                                {/* Conversión: {item.conversionMoneda} {inputMoneda?.sigla} */}
+                                Conversión:{' '}
+                                {numberWithCommas(
+                                  item.cantidad * item.conversionMoneda -
+                                    item.conversionMontoDescuento,
+                                  5,
+                                )}{' '}
+                                {'BOB'}
+                              </div>
                             </td>
                             <td data-label="OPCIONES" style={{ textAlign: 'right' }}>
                               <IconButton onClick={() => remove(index)}>
@@ -447,3 +618,4 @@ export const DetalleTransaccionComercial: FC<Props> = (props) => {
     </>
   )
 }
+

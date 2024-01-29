@@ -119,7 +119,7 @@ const VentaRegistro = () => {
             </div>
           </Grid>
 
-          <Grid item lg={5} md={6} xs={12}>
+          <Grid item lg={5} md={12} xs={12}>
             <div style={{ padding: '20px 0' }}>
               <VentaTotales form={form} />
             </div>

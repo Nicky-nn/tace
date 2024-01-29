@@ -18,13 +18,10 @@ const genDetalle = () => {}
 
 export const REGISTRO_ONLINE = gql`
   mutation ICE_REGISTRO(
-    $input: FacturaEntidadFinancieraInput!
+    $input: FacturaTasaCeroInput!
     $contingencia: FacturaContingenciaInput!
   ) {
-    facturaEntidadFinancieraContingenciaRegistro(
-      input: $input
-      contingencia: $contingencia
-    ) {
+    facturaTasaCeroContingenciaRegistro(input: $input, contingencia: $contingencia) {
       state
       numeroFactura
       representacionGrafica {
@@ -55,7 +52,8 @@ export const fetchFacturaCreate = async (
       input: input,
       contingencia: contingencia,
     })
-    return data.facturaEntidadFinancieraContingenciaRegistro
+    console.log('data', data)
+    return data.facturaTasaCeroContingenciaRegistro
   } catch (e: any) {
     console.log('error', e)
     // error en json
@@ -64,3 +62,4 @@ export const fetchFacturaCreate = async (
     throw new MyGraphQlError(e)
   }
 }
+
