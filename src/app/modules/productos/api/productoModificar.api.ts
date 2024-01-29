@@ -6,7 +6,7 @@ import { AccessToken } from '../../../base/models/paramsModel'
 import { ProductoInputApiProps, ProductoProps } from '../interfaces/producto.interface'
 
 const gqlQuery = gql`
-  mutation PRODUCTOS_ACTUALIZAR($codigoProducto: String!, $input: SectorEducativoProductoInput!!) {
+  mutation PRODUCTOS_ACTUALIZAR($codigoProducto: String!, $input: TasaCeroProductoInput!) {
     tasaCeroProductoActualizar(codigoProducto: $codigoProducto, input: $input) {
       codigoProducto
       descripcion

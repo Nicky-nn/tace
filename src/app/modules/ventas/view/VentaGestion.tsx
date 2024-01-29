@@ -133,8 +133,17 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
     header: 'Estado',
     accessorFn: (row) => (
       <Chip
+        // color={
+        //   row.state === apiEstado.validada
+        //     ? 'success'
+        //     : row.state === apiEstado.pendiente
+        //     ? 'warning'
+        //     : 'error'
+        // }
         color={
-          row.state === apiEstado.validada
+          row.reversion === true
+            ? 'info'
+            : row.state === apiEstado.validada
             ? 'success'
             : row.state === apiEstado.pendiente
             ? 'warning'

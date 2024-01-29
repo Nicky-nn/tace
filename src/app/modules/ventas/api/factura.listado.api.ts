@@ -31,6 +31,7 @@ const query = gql`
       }
       docs {
         cuf
+        reversion
         moneda {
           codigoClasificador
           descripcion

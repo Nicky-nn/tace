@@ -150,6 +150,7 @@ export interface FacturaProps {
   numeroFactura: number
   numeroTarjeta: string
   puntoVenta: PuntoVentaProps
+  reversion: boolean
   razonSocialEmisor: string
   representacionGrafica: RepresentacionGraficaProps
   state: string
