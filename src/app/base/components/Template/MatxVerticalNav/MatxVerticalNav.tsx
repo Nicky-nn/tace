@@ -92,9 +92,11 @@ const MatxVerticalNav: FC<any> = ({ items }: any) => {
           </ListLabel>
         )
       if (item.children) {
+        const visibleChildren = item.children.filter((child) => child.visible)
+
         return (
           <MatxVerticalNavExpansionPanel mode={mode} item={item} key={index}>
-            {renderLevels(item.children)}
+            {renderLevels(visibleChildren)}
           </MatxVerticalNavExpansionPanel>
         )
       } else if (item.type === 'extLink') {
@@ -177,3 +179,4 @@ const MatxVerticalNav: FC<any> = ({ items }: any) => {
 }
 
 export default React.memo(MatxVerticalNav)
+

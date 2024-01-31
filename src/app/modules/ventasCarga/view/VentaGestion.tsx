@@ -33,7 +33,6 @@ import { genApiQuery, openInNewTab } from '../../../utils/helper'
 import { localization } from '../../../utils/localization'
 import {
   muiTableApiEstado,
-  muiTableApiTipoOperacion,
   muiTableHeadCellFilterTextFieldProps,
 } from '../../../utils/materialReactTableUtils'
 import { fetchFacturaListado } from '../api/factura.listado.api'
@@ -58,13 +57,13 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
     enableColumnFilter: false,
     size: 160,
   },
-  // {
-  //   header: 'Razon Social',
-  //   id: 'cliente.razonSocial',
-  //   accessorKey: 'cliente.razonSocial',
-  //   maxSize: 250,
-  //   minSize: 200,
-  // },
+  {
+    header: 'Razon Social',
+    id: 'cliente.razonSocial',
+    accessorKey: 'cliente.razonSocial',
+    maxSize: 250,
+    minSize: 200,
+  },
   {
     id: 'cliente.numeroDocumento',
     header: 'Nro. Documento',
@@ -110,25 +109,6 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
     enableColumnFilter: false,
   },
   {
-    header: 'Operacion',
-    accessorKey: 'tipoOperacion',
-    size: 140,
-    filterVariant: 'select',
-    enableColumnFilter: true,
-    filterSelectOptions: [
-      { text: 'Venta de Libros', value: '1' },
-      { text: 'Transporte de Carga', value: '2' },
-    ],
-    accessorFn: (row) => (
-      <span>{row.tipoOperacion === 1 ? 'Venta de Libros' : 'Transporte de Carga'}</span>
-
-      // const cleanedTipoOperacion = String(row.tipoOperacion).replace(/\D/g, '') // Convert to string and then remove non-numeric characters
-
-      // return cleanedTipoOperacion
-    ),
-  },
-
-  {
     header: 'Tipo Cambio',
     accessorKey: 'tipoCambio',
     size: 130,
@@ -153,6 +133,13 @@ const tableColumns: MRT_ColumnDef<FacturaProps>[] = [
     header: 'Estado',
     accessorFn: (row) => (
       <Chip
+        // color={
+        //   row.state === apiEstado.validada
+        //     ? 'success'
+        //     : row.state === apiEstado.pendiente
+        //     ? 'warning'
+        //     : 'error'
+        // }
         color={
           row.reversion === true
             ? 'info'
@@ -222,9 +209,6 @@ const VentaGestion: FC<any> = () => {
     async () => {
       try {
         const query = genApiQuery(columnFilters)
-
-        console.log(query)
-
         const fetchPagination: PageProps = {
           ...PAGE_DEFAULT,
           page: pagination.pageIndex + 1,
@@ -232,21 +216,7 @@ const VentaGestion: FC<any> = () => {
           reverse: sorting.length <= 0,
           query,
         }
-
         const response = await fetchFacturaListado(fetchPagination)
-        // const mappedResponse = responses.docs.map((factura) => {
-        //   return {
-        //     ...factura,
-        //     tipoOperacion:
-        //       factura.tipoOperacion === 1 ? 'Venta de Libros' : 'Transporte de Carga',
-        //   }
-        // })
-
-        // const response = {
-        //   ...responses,
-        //   docs: mappedResponse,
-        // }
-
         if (response) {
           const { pageInfo, docs } = response
           setRowCount(pageInfo.totalDocs)

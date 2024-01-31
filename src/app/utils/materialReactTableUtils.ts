@@ -10,6 +10,7 @@ export const muiTableHeadCellFilterTextFieldProps: TextFieldProps = {
 }
 
 export const muiTableApiEstado = ['ANULADO', 'VALIDADA', 'ELABORADO', 'PENDIENTE']
+export const muiTableApiTipoOperacion = ['VENTA DE LIBROS', 'TRANSPORTE DE CARGA']
 
 /**
  * @description Espacio de para las acciones de fila

@@ -1,17 +1,50 @@
-import { Person } from '@mui/icons-material'
-import { Chip, FormControl, Grid, TextField } from '@mui/material'
-import React, { FunctionComponent } from 'react'
-
+import React, { FunctionComponent, useEffect, useState } from 'react'
+import { CheckBox, Person } from '@mui/icons-material'
+import { Checkbox, Chip, FormControl, Grid, TextField } from '@mui/material'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import { H4 } from '../../../../base/components/Template/Typography'
 import useAuth from '../../../../base/hooks/useAuth'
+import { navigations } from '../../../../navigations'
 
 interface OwnProps {}
 
 type Props = OwnProps
 
+const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
+
 const CuentaPerfil: FunctionComponent<Props> = (props) => {
   const { user } = useAuth()
+
+  const [ventaLibrosChecked, setVentaLibrosChecked] = useState(true)
+  const [transporteCargaChecked, setTransporteCargaChecked] = useState(true)
+
+  const toggleVentaLibros = () => setVentaLibrosChecked((prev) => !prev)
+  const toggleTransporteCarga = () => setTransporteCargaChecked((prev) => !prev)
+
+  // MOdificamos el valor de la variable navigations
+  const x = navigations
+
+  // Guardamos las variables de Check en Cache
+
+  // const ventaLibrosCheckedCache = localStorage.getItem('ventaLibrosChecked')
+  // const transporteCargaCheckedCache = localStorage.getItem('transporteCargaChecked')
+
+  useEffect(() => {
+    x.map((item) => {
+      if (item.name === 'Facturación') {
+        item.children?.map((item2) => {
+          if (item2.name === 'Registrar Venta Libros') {
+            // item2.visible = ventaLibrosChecked
+            item2.visible = localStorage.getItem('ventaLibrosChecked') === 'true'
+          }
+          if (item2.name === 'Registrar T. de Carga') {
+            item2.visible = localStorage.getItem('transporteCargaChecked') === 'true'
+          }
+        })
+      }
+    })
+  }, [ventaLibrosChecked, transporteCargaChecked])
+
   return (
     <>
       <SimpleCard title={'PERFIL DE USUARIO'} childIcon={<Person />}>
@@ -62,6 +95,57 @@ const CuentaPerfil: FunctionComponent<Props> = (props) => {
               <Chip key={item} label={item} variant="outlined" />
             ))}
           </Grid>
+          <Grid item lg={12} md={12} xs={12}>
+            <H4>Facturación Menú</H4>
+            <div>
+              <label onClick={toggleVentaLibros} style={{ cursor: 'pointer' }}>
+                <Checkbox
+                  {...label}
+                  // checked={ventaLibrosChecked}
+                  checked={JSON.parse(localStorage.getItem('ventaLibrosChecked')!)}
+                  sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                  style={{ marginRight: '0px' }}
+                  onClick={() => {
+                    localStorage.setItem(
+                      'ventaLibrosChecked',
+                      JSON.stringify(ventaLibrosChecked),
+                    )
+                  }}
+                />
+                <span
+                  style={{
+                    marginLeft: '8px',
+                    marginRight: '8px',
+                  }}
+                >
+                  Venta de Libros
+                </span>
+              </label>
+
+              <label onClick={toggleTransporteCarga} style={{ cursor: 'pointer' }}>
+                <Checkbox
+                  {...label}
+                  checked={JSON.parse(localStorage.getItem('transporteCargaChecked')!)}
+                  sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
+                  style={{ marginRight: '0px' }}
+                  onClick={() => {
+                    localStorage.setItem(
+                      'transporteCargaChecked',
+                      JSON.stringify(transporteCargaChecked),
+                    )
+                  }}
+                />
+                <span
+                  style={{
+                    marginLeft: '8px',
+                    marginRight: '8px',
+                  }}
+                >
+                  Transporte de Carga
+                </span>
+              </label>
+            </div>
+          </Grid>
         </Grid>
       </SimpleCard>
     </>
@@ -69,3 +153,4 @@ const CuentaPerfil: FunctionComponent<Props> = (props) => {
 }
 
 export default CuentaPerfil
+

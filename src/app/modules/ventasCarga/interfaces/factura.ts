@@ -61,7 +61,6 @@ export interface FacturaInputProps {
   nombreEstudiante?: string
   periodoFacturado?: string
   montoGiftCard?: number | null | undefined
-  tipoOperacion?: number
 }
 
 /**
@@ -160,7 +159,6 @@ export interface FacturaProps {
   tipoCambio: number
   tipoEmision: SinTipoEmisionProps
   tipoFactura: SinTipoFacturaProps
-  tipoOperacion: any
   updatedAt: string
   usuario: string
   usucre: string

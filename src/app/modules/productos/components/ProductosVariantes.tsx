@@ -19,6 +19,7 @@ import {
   ProductoInputProps,
   ProductoVarianteProps,
 } from '../interfaces/producto.interface'
+import { useLocation } from 'react-router-dom'
 
 interface OwnProps {
   codigoActividad: string
@@ -61,6 +62,12 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
         size: 100,
       },
       {
+        accessorKey: 'moneda.descripcion',
+        header: 'Moneda',
+        enableColumnFilter: false,
+        size: 100,
+      },
+      {
         accessorKey: 'sinProductoServicio.descripcionProducto',
         header: 'Descripción Producto',
         enableColumnFilter: false,
@@ -93,6 +100,9 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
   // const [rowSelection, setRowSelection] = useState({})
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({})
 
+  const location = useLocation()
+  const currentPath = location.pathname
+
   // FIN DATA TABLE
   const { data, isError, isFetching, isLoading } = useQuery<any>(
     [
@@ -103,10 +113,17 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
       sorting,
     ],
     async () => {
-      const query = genApiQuery(columnFilters, [
-        `sinProductoServicio.codigoActividad=${codigoActividad}`,
-      ])
-      // console.log(query)
+      let query = ''
+      if (currentPath === '/ventas/registro') {
+        query = genApiQuery(columnFilters, [
+          `tipoOperacion=1&sinProductoServicio.codigoActividad=${codigoActividad}`,
+        ])
+      } else if (currentPath === '/ventas/registroCarga') {
+        query = genApiQuery(columnFilters, [
+          `tipoOperacion=2&sinProductoServicio.codigoActividad=${codigoActividad}`,
+        ])
+      }
+
       const fetchPagination: PageProps = {
         ...PAGE_DEFAULT,
         page: pagination.pageIndex + 1,
@@ -191,3 +208,4 @@ const ProductosVariantes: FunctionComponent<Props> = (props) => {
 }
 
 export default ProductosVariantes
+

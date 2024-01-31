@@ -39,8 +39,8 @@ const VentaRegistro = () => {
       <div className="breadcrumb">
         <Breadcrumb
           routeSegments={[
-            { name: 'Venta', path: '/ventas/registro' },
-            { name: 'Registrar Venta de Libros' },
+            { name: 'Venta', path: '/ventas/registroCarga' },
+            { name: 'Registrar Venta Transporte de Carga' },
           ]}
         />
       </div>

@@ -14,6 +14,7 @@ export interface NavigationProps {
     name: string
     iconText: string
     path: string
+    visible: boolean
   }>
 }
 
@@ -33,14 +34,22 @@ export const navigations: NavigationProps[] = [
     icon: 'add_to_queue',
     children: [
       {
-        name: 'Registrar Factura',
-        iconText: 'ALRE',
+        name: 'Registrar Venta Libros',
+        iconText: 'VL',
         path: '/ventas/registro',
+        visible: true,
+      },
+      {
+        name: 'Registrar T. de Carga',
+        iconText: 'TRA',
+        path: '/ventas/registroCarga',
+        visible: true,
       },
       {
         name: 'Gestión de Facturas',
         iconText: 'ALGE',
         path: '/ventas/gestion',
+        visible: true,
       },
     ],
   },
@@ -63,11 +72,13 @@ export const navigations: NavigationProps[] = [
         name: 'Gestión de Servicios',
         iconText: 'GP',
         path: productosRouteMap.gestion,
+        visible: true,
       },
       {
         name: 'Proveedores',
         iconText: 'PR',
         path: proveedorRouteMap.gestion,
+        visible: true,
       },
     ],
   },
@@ -80,6 +91,7 @@ export const navigations: NavigationProps[] = [
         name: 'Gestión de clientes',
         path: '/clientes/gestion',
         iconText: 'GC',
+        visible: true,
       },
     ],
   },
@@ -91,11 +103,13 @@ export const navigations: NavigationProps[] = [
         name: 'Registrar Contingencia',
         iconText: 'RC',
         path: '/contingencia/registro',
+        visible: true,
       },
       {
         name: 'Gestión de Contingencias',
         iconText: 'GC',
         path: '/contingencia/gestion',
+        visible: true,
       },
     ],
   },
@@ -108,6 +122,7 @@ export const navigations: NavigationProps[] = [
         name: 'Echarts',
         path: '/charts/echarts',
         iconText: 'E',
+        visible: true,
       },
     ],
   },

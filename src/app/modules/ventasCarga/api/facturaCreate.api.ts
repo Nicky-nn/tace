@@ -18,7 +18,7 @@ const genDetalle = () => {}
 
 export const REGISTRO_ONLINE = gql`
   mutation ICE_REGISTRO($input: FacturaTasaCeroInput!) {
-    facturaTasaCeroRegistro(input: $input, tipoOperacion: 1) {
+    facturaTasaCeroRegistro(input: $input, tipoOperacion: 2) {
       state
       numeroFactura
       representacionGrafica {
@@ -42,6 +42,7 @@ export const fetchFacturaCreate = async (input: any): Promise<FacturaProps> => {
     const client = new GraphQLClient(import.meta.env.ISI_API_URL)
     const token = localStorage.getItem(AccessToken)
     client.setHeader('authorization', `Bearer ${token}`)
+    
     const data: any = await client.request(REGISTRO_ONLINE, {
       input: input,
     })
@@ -54,4 +55,3 @@ export const fetchFacturaCreate = async (input: any): Promise<FacturaProps> => {
     throw new MyGraphQlError(e)
   }
 }
-

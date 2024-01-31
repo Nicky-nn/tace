@@ -30,7 +30,6 @@ const query = gql`
         totalDocs
       }
       docs {
-        tipoOperacion
         cuf
         reversion
         moneda {

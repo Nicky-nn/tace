@@ -12,10 +12,10 @@
     "lint:format": "prettier  --loglevel warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" ",
     "lint": "yarn lint:format && yarn lint:fix ",
     "zip": "yarn run build && yarn run compress:7z || yarn run compress:zip || yarn run compress:rar",
-    "compress:zip": "cd dist && zip -r dev.tace.isipass.com.bo.zip .",
-    "compress:7z": "cd dist && 7z a -r dev.tace.isipass.com.bo.zip .",
-    "compress:rar": "cd dist && rar a -r dev.tace.isipass.com.bo.rar .",
-    "deploy": "printf \"cd htdocs && rm -rf * && unzip -o dist/dev.tace.isipass.com.bo.zip\" | ssh nick@200.105.174.10"
+    "compress:zip": "cd dist && zip -r dev.tasa-cero.isipass.com.bo.zip .",
+    "compress:7z": "cd dist && 7z a -r dev.tasa-cero.isipass.com.bo.zip .",
+    "compress:rar": "cd dist && rar a -r dev.tasa-cero.isipass.com.bo.rar .",
+    "deploy": "printf \"cd htdocs && rm -rf * && unzip -o dist/dev.tasa-cero.isipass.com.bo.zip\" | ssh nick@200.105.174.10"
   },
   "authors": [
     {

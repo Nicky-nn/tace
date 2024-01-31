@@ -31,6 +31,7 @@ const reqQuery = gql`
         totalDocs
       }
       docs {
+        tipoOperacion
         codigoProducto
         state
         nombre
