@@ -95,6 +95,7 @@ export interface ProductoInputProps {
   codigoUnidadMedida: SinUnidadMedidaProps | null
   tipoProducto: TipoProductoProps | null
   codigoProveedor: ProveedorProps | null
+  tipoOperacion?: string | null
   state?: string
 }
 

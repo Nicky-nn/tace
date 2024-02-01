@@ -119,9 +119,14 @@ const ProductoPrecio: FunctionComponent<Props> = (props) => {
                     // @ts-ignore
                     control: (styles) => ({
                       ...styles,
-                      fontWeight: 'bold',
                       fontSize: '1.2em',
                     }),
+                    menu: (provided, state) => ({
+                      ...provided,
+                      backgroundColor: 'white', // Cambia este valor al color que desees
+                      zIndex: 1000, // Ajusta el valor según sea necesario
+                    }),
+
                   }}
                   name="moneda"
                   placeholder={'Seleccione la moneda de venta'}

@@ -14,9 +14,16 @@ export const productoRegistroValidatorResponde = async (
     nombre: string().required('Debe ingresar el nombre del producto'),
     codigoActividad: mixed().required('Debe seleccionar la actividad económica'),
     codigoProductoSin: mixed().required('Debe seleccionar el producto sin'),
-    precio: number().min(0.01).required('Debe ingresar el precio del producto').typeError('Debe ingresar un número'),
+    precio: number()
+      .min(0.01)
+      .required('Debe ingresar el precio del producto')
+      .typeError('Debe ingresar un número'),
     codigoUnidadMedida: number().required('Debe seleccionar la unidad de medida'),
-    moneda: object().required('Debe seleccionar la moneda'), 
+    moneda: object().required('Debe seleccionar la moneda'),
+    tipoOperacion: mixed()
+      .required('Debe seleccionar el tipo de operación')
+      .typeError('Debe seleccionar el tipo de operación')
+      .required(),
   })
 
   try {
@@ -36,7 +43,11 @@ export const productoRegistroValidator = object({
   nombre: string().required(),
   codigoActividad: mixed().required(),
   codigoProductoSin: mixed().required(),
-  precio: number().min(0.01).required().typeError('Debe ingresar un número'),
+  precio: number().min(0.01).required('Debe ingresar un número').typeError('Debe ingresar un número'),
   codigoUnidadMedida: mixed().required(),
+  tipoOperacion: mixed()
+    .required('Debe seleccionar el tipo de operación')
+    .typeError('Debe seleccionar el tipo de operación')
+    .required(),
 })
 

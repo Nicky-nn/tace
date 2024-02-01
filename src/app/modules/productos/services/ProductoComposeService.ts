@@ -22,5 +22,7 @@ export const productoComposeService = (aql: ProductoInputProps): any => {
     ),
     tipoProductoId: aql.tipoProducto?._id,
     codigoProveedor: aql.codigoProveedor?.codigo,
+    tipoOperacion: aql.tipoOperacion === 'Tasa Cero Venta Libros' ? 1 : 2,
   }
 }
+

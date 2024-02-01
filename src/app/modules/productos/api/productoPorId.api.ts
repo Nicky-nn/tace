@@ -9,6 +9,7 @@ const query = gql`
   query PRODUCTO($codigoProducto: ID!) {
     tasaCeroProducto(codigoProducto: $codigoProducto) {
       codigoProducto
+      tipoOperacion
       nombre
       descripcion
       actividadEconomica {

@@ -109,6 +109,16 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
         form.setValue('descripcion', response.descripcion)
         form.setValue('precio', response.precio)
         form.setValue('moneda', response.moneda)
+        form.setValue('tipoOperacion', response.tipoOperacion)
+
+        const valueToSend =
+          response.tipoOperacion === 1
+            ? 'Tasa Cero Venta Libros'
+            : response.tipoOperacion === 2
+            ? 'Tasa Cero Transporte de Carga'
+            : ''
+
+        form.setValue('tipoOperacion', valueToSend)
 
         if (response.tipoProducto && response.tipoProducto._id) {
           const getTiposProducto = await apiTipoProductoIdListado(
@@ -212,3 +222,4 @@ const ProductoActualizar: FunctionComponent<Props> = (props) => {
 }
 
 export default ProductoActualizar
+

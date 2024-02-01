@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { CheckBox, Person } from '@mui/icons-material'
-import { Checkbox, Chip, FormControl, Grid, TextField } from '@mui/material'
+import { Button, Checkbox, Chip, FormControl, Grid, TextField } from '@mui/material'
 import SimpleCard from '../../../../base/components/Template/Cards/SimpleCard'
 import { H4 } from '../../../../base/components/Template/Typography'
 import useAuth from '../../../../base/hooks/useAuth'
@@ -22,12 +22,12 @@ const CuentaPerfil: FunctionComponent<Props> = (props) => {
   const toggleTransporteCarga = () => setTransporteCargaChecked((prev) => !prev)
 
   // MOdificamos el valor de la variable navigations
-  const x = navigations
 
   // Guardamos las variables de Check en Cache
 
   // const ventaLibrosCheckedCache = localStorage.getItem('ventaLibrosChecked')
   // const transporteCargaCheckedCache = localStorage.getItem('transporteCargaChecked')
+  const x = navigations
 
   useEffect(() => {
     x.map((item) => {
@@ -110,6 +110,9 @@ const CuentaPerfil: FunctionComponent<Props> = (props) => {
                       'ventaLibrosChecked',
                       JSON.stringify(ventaLibrosChecked),
                     )
+                    if (ventaLibrosChecked != ventaLibrosChecked) {
+                      window.location.reload()
+                    }
                   }}
                 />
                 <span
@@ -133,6 +136,7 @@ const CuentaPerfil: FunctionComponent<Props> = (props) => {
                       'transporteCargaChecked',
                       JSON.stringify(transporteCargaChecked),
                     )
+                    // console.log('transporteCargaChecked', transporteCargaChecked)
                   }}
                 />
                 <span
@@ -144,6 +148,15 @@ const CuentaPerfil: FunctionComponent<Props> = (props) => {
                   Transporte de Carga
                 </span>
               </label>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  window.location.reload()
+                }}
+              >
+                Guardar Cambios
+              </Button>
             </div>
           </Grid>
         </Grid>

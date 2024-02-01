@@ -1,4 +1,4 @@
-import { FormControl, FormHelperText, Grid } from '@mui/material'
+import { Autocomplete, FormControl, FormHelperText, Grid, TextField } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { FunctionComponent, useEffect, useState } from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
@@ -38,6 +38,10 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
   const codigoActividadWatch = watch('codigoActividad')
 
   const [codigoProducto, setCodigoProducto] = useState('')
+  const options = ['Tasa Cero Venta Libros', 'Tasa Cero Transporte de Carga']
+
+  const [valor, setValor] = useState<string | null>(null)
+  const [inputValor, setInputValor] = useState('')
 
   const generarCodigoProducto = (nombreProducto: string): string => {
     const palabras = nombreProducto
@@ -123,8 +127,6 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
     }
   }, [actLoading, actividades])
 
-  const [openDialog, setOpenDialog] = useState(false)
-  const [cambioValor, setcambioValor] = useState('')
 
   return (
     <>
@@ -224,7 +226,7 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
               )}
             />
           </Grid>
-          <Grid item lg={4} md={4} xs={12} sm={6}>
+          <Grid item lg={4} md={12} xs={12} sm={6}>
             <Controller
               control={control}
               name={'codigoProducto'}
@@ -259,7 +261,52 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
               )}
             />
           </Grid>
-          <Grid item lg={12} md={12} xs={12}>
+          <Grid item lg={4} md={12} xs={12} sm={12}>
+            <Controller
+              control={control}
+              name={'tipoOperacion'}
+              render={({ field }) => (
+                <Autocomplete
+                  defaultValue={null}
+                  value={getValues('tipoOperacion')?.toString() ?? ''}
+                  onChange={(event: any, newValue: string | null) => {
+                    setValor(newValue)
+                    setValue('tipoOperacion', newValue)
+                  }}
+                  inputValue={inputValor}
+                  onInputChange={(event, newInputValue) => {
+                    setInputValor(newInputValue)
+                  }}
+                  id="tipoOperacion"
+                  options={options}
+                  sx={{ width: '100%' }}
+                  renderInput={(params) => {
+                    if (errors.tipoOperacion) {
+                      return (
+                        <TextField
+                          error
+                          helperText={errors.tipoOperacion?.message}
+                          {...params}
+                          label="Seleccione Operación del Producto"
+                          variant="outlined"
+                        />
+                      )
+                    } else {
+                      return (
+                        <TextField
+                          {...params}
+                          label="Seleccione Operación del Producto"
+                          variant="outlined"
+                        />
+                      )
+                    }
+                  }}
+                />
+              )}
+            />
+          </Grid>
+
+          <Grid item lg={8} md={12} xs={12} sm={12}>
             <Controller
               name={'descripcion'}
               control={control}
@@ -284,3 +331,4 @@ const ProductoHomologacion: FunctionComponent<Props> = (props) => {
 }
 
 export default ProductoHomologacion
+
