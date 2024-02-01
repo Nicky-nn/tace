@@ -169,7 +169,7 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
   return (
     <>
       <Dialog
-        sx={{ '& .MuiDialog-paper': { width: '80%', height: '60%' } }}
+        sx={{ '& .MuiDialog-paper': { width: '80%', height: 'auto' } }}
         maxWidth="sm"
         keepMounted={false}
         open={open}
@@ -183,7 +183,19 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
                 <FormControl fullWidth component={'div'}>
                   <MyInputLabel shrink>Tipo de Producto Homologado</MyInputLabel>
                   <Select<SinProductoServicioProps>
-                    styles={reactSelectStyles}
+                    styles={{
+                      ...reactSelectStyles,
+                      // @ts-ignore
+                      control: (baseStyles, state) => ({
+                        ...baseStyles,
+                        fontSize: '15px',
+                      }),
+                      menu: (provided, state) => ({
+                        ...provided,
+                        backgroundColor: 'white', // Cambia este valor al color que desees
+                        zIndex: 1000, // Ajusta el valor según sea necesario
+                      }),
+                    }}
                     menuPosition={'fixed'}
                     name="productoServicio"
                     placeholder={'Seleccione producto para homologación'}
@@ -252,12 +264,17 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
                   styles={{
                     ...reactSelectStyles,
                     // @ts-ignore
-                    control: (styles) => ({
-                      ...styles,
-                      fontSize: '1.2em',
-                      zIndex: 999,
+                    control: (baseStyles, state) => ({
+                      ...baseStyles,
+                      fontSize: '15px',
+                    }),
+                    menu: (provided, state) => ({
+                      ...provided,
+                      backgroundColor: 'white', // Cambia este valor al color que desees
+                      zIndex: 1000, // Ajusta el valor según sea necesario
                     }),
                   }}
+                  menuPosition='fixed'
                   name="moneda"
                   placeholder={'Seleccione la moneda de venta'}
                   //@ts-ignore
@@ -265,8 +282,7 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
                   onChange={async (val: any) => {
                     setInputForm({ ...inputForm, moneda: val })
                   }}
-                  onBlur={async (val) => {
-                  }}
+                  onBlur={async (val) => {}}
                   isSearchable={false}
                   options={monedas}
                   getOptionValue={(item) => item.codigo.toString()}

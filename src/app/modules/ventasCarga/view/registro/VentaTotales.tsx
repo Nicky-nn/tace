@@ -122,7 +122,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
       const mt = resp.find((i) => i.codigo === monedaTienda.codigo)
       if (sessionMoneda && mt) {
         setValue('moneda', sessionMoneda)
-        setValue('tipoCambio', mt.tipoCambio)
+        setValue('tipoCambio', sessionMoneda.tipoCambio)
       }
       return resp
     }
@@ -232,7 +232,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                   underline="hover"
                 >
                   {numberWithCommas(getValues('descuentoAdicional') || 0, {})}
-                  <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
+                  <span style={{ fontSize: '0.8em' }}> BOB</span>
                 </Link>
                 <DescuentoAdicionalDialog
                   id="ringtone-menu"
@@ -263,7 +263,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
                   underline="hover"
                 >
                   {numberWithCommas(getValues('montoGiftCard') ?? 0, {})}
-                  <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
+                  <span style={{ fontSize: '0.8em' }}> BOB</span>
                 </Link>
                 <GiftCardDialog
                   id="giftCardDialog"
@@ -288,7 +288,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
             secondaryAction={
               <Typography variant="subtitle1" gutterBottom>
                 {numberWithCommas(getValues('total') || 0, {})}
-                <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
+                <span style={{ fontSize: '0.8em' }}> BOB</span>
               </Typography>
             }
           >
@@ -304,7 +304,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
             secondaryAction={
               <Typography variant="h6" gutterBottom>
                 {numberWithCommas(getValues('montoPagar') || 0, {})}
-                <span style={{ fontSize: '0.8em' }}> {inputMoneda?.sigla || ''}</span>
+                <span style={{ fontSize: '0.8em' }}> BOB</span>
               </Typography>
             }
           >

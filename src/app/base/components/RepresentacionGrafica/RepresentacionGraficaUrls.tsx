@@ -56,7 +56,7 @@ const RepresentacionGraficaUrls: FunctionComponent<Props> = (props) => {
               }
             />
           </ListItem>
-          {/* <ListItem>
+          <ListItem>
             <ListItemText
               primary={
                 <Button
@@ -69,7 +69,7 @@ const RepresentacionGraficaUrls: FunctionComponent<Props> = (props) => {
                 </Button>
               }
             />
-          </ListItem> */}
+          </ListItem>
           <ListItem>
             <ListItemText
               primary={

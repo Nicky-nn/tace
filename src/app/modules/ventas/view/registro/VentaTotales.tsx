@@ -54,6 +54,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
   const {
     user: { moneda, monedaTienda },
   } = useAuth()
+
   const {
     form: {
       control,
@@ -64,6 +65,7 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
       formState: { errors },
     },
   } = props
+
   const [openDescuentoAdicional, setOpenDescuentoAdicional] = useState(false)
   const [openGiftCard, setopenGiftCard] = useState(false)
   const mySwal = withReactContent(Swal)
@@ -104,6 +106,8 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
   }
   const form = props.form
 
+  let auxMinedas: MonedaProps[] = []
+
   const {
     data: monedas,
     isLoading: monedaLoading,
@@ -116,16 +120,18 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
       const sessionMoneda = resp.find(
         (i) => i.codigo === genReplaceEmpty(inputMoneda?.codigo, moneda.codigo),
       )
+
       // montoTienda
       const mt = resp.find((i) => i.codigo === monedaTienda.codigo)
       if (sessionMoneda && mt) {
         setValue('moneda', sessionMoneda)
-        setValue('tipoCambio', mt.tipoCambio)
+        setValue('tipoCambio', sessionMoneda.tipoCambio)
       }
       return resp
     }
     return []
   })
+
 
   const calculoMoneda = (monto: number): number => {
     try {
@@ -147,11 +153,6 @@ const VentaTotales: FunctionComponent<Props> = (props) => {
     getValues('montoGiftCard'),
     getValues('codigoMetodoPago'),
   ])
-
-  useEffect(() => {
-    const tipoCambioValue = inputMoneda?.tipoCambio ?? 0
-    setValue('tipoCambio', tipoCambioValue)
-  }, [form, getValues('moneda')])
 
   return (
     <>

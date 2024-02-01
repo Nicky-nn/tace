@@ -26,6 +26,7 @@ export const composeFactura = (fcv: FacturaInputProps): any => {
     codigoMoneda: fcv.moneda!.codigo,
     tipoCambio: fcv.tipoCambio,
     detalleExtra: fcv.detalleExtra,
+    codigoExcepcion: fcv.codigoExcepcion,
     detalle: fcv.detalle.map((item) => ({
       codigoActividad: fcv.actividadEconomica!?.codigoActividad,
       codigoProductoSin: item.codigoProductoSin,

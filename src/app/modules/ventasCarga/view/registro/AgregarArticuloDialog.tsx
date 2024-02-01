@@ -169,7 +169,7 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
   return (
     <>
       <Dialog
-        sx={{ '& .MuiDialog-paper': { width: '80%', height: '60%' } }}
+        sx={{ '& .MuiDialog-paper': { width: '80%', height: 'auto' } }}
         maxWidth="sm"
         keepMounted={false}
         open={open}
@@ -267,6 +267,7 @@ const AgregarArticuloDialog: FunctionComponent<Props> = (props: Props) => {
                   }}
                   onBlur={async (val) => {
                   }}
+                  menuPosition='fixed'
                   isSearchable={false}
                   options={monedas}
                   getOptionValue={(item) => item.codigo.toString()}
