@@ -14,7 +14,9 @@
     "zip": "yarn run build && yarn run compress:7z || yarn run compress:zip || yarn run compress:rar",
     "compress:zip": "cd dist && zip -r dev.tasa-cero.isipass.com.bo.zip .",
     "compress:7z": "cd dist && 7z a -r dev.tasa-cero.isipass.com.bo.zip .",
+    "compress:7zz": "cd dist && zip -r tasa-cero.isipass.net.zip .",
     "compress:rar": "cd dist && rar a -r dev.tasa-cero.isipass.com.bo.rar .",
+    "production": "yarn run build && yarn run compress:7zz",
     "deploy": "printf \"cd htdocs && rm -rf * && unzip -o dist/dev.tasa-cero.isipass.com.bo.zip\" | ssh nick@200.105.174.10"
   },
   "authors": [

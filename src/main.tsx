@@ -35,15 +35,6 @@ if ('serviceWorker' in navigator) {
 }
 
 const requestNotificationPermission = () => {
-  Notification.requestPermission().then((permission) => {
-    if (permission === 'granted') {
-      // Permiso concedido, puedes mostrar notificaciones.
-      console.log('Permiso concedido')
-    } else if (permission === 'denied') {
-      // Permiso denegado, no puedes mostrar notificaciones.
-      console.log('Permiso denegado')
-    }
-  })
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

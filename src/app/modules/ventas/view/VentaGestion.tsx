@@ -402,13 +402,13 @@ const VentaGestion: FC<any> = () => {
                       <PictureAsPdf /> Pdf Medio Oficio
                     </StyledMenuItem>
 
-                    {/* <StyledMenuItem
+                    <StyledMenuItem
                       onClick={() => {
                         openInNewTab(row.original.representacionGrafica.rollo)
                       }}
                     >
                       <PictureAsPdf /> Pdf Rollo
-                    </StyledMenuItem> */}
+                    </StyledMenuItem>
 
                     <StyledMenuItem
                       onClick={() => {
